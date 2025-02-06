@@ -11,9 +11,9 @@ namespace WebAPI.Controllers.Test;
 public class TestController(ISender sender) : ControllerBase
 {
     [HttpPost("create")]
-    public async Task<ActionResult<EntityBoundTest>> CreateAsync(string name)
+    public async Task<ActionResult<EntityBoundTest>> CreateAsync(CreateTestCommand request)
     {
-        var result = await sender.Send(new CreateTestCommand(name));
+        var result = await sender.Send(request);
         return Ok(result);
     }
 

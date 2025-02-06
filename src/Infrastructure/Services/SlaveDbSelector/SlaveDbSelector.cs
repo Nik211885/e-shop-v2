@@ -9,7 +9,7 @@ namespace Infrastructure.Services.SlaveDbSelector
 
         public SlaveDbSelector(IConfiguration configuration)
         {
-            _slaveConnectString = configuration.GetSection("ConnectionStrings:SlaveDB").GetChildren()
+            _slaveConnectString = configuration.GetSection("ConnectionStrings:Slave").GetChildren()
                 .Select(x => x.Value 
                             ?? throw new Exception("Have errors with get connection string in slave db")).ToList() 
                                   ?? throw new Exception("Not setup connection string for slave db key get is ConnectionStrings:SlaveDB");
@@ -21,5 +21,6 @@ namespace Infrastructure.Services.SlaveDbSelector
             _currentIndex = (_currentIndex + 1) % _slaveConnectString.Count;
             return connectString;
         }
+        
     }
 }

@@ -1,0 +1,2 @@
+unitofwork quản lý các tranaction va tránh bị lặp lại các hành động về saveChange quá nhiều lần
+// nếu có quá nhiều tranaction cho các hành động đơn lẽ và các thao tác save change xuống db gây ảnh hưởng đến hiệu suất của ứng dụng

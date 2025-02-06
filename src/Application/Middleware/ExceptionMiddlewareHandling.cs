@@ -1,5 +1,6 @@
 using Application.Models;
 using Core.Exceptions;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
@@ -11,28 +12,26 @@ namespace Application.Middleware
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
+            try
+            {
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                await HandlerExceptionAsync(context, ex);
+            }
+        }
+
+        private async Task HandlerExceptionAsync(HttpContext context, Exception exception)
+        {
             var controllerName = context.GetRouteData()?.Values["controller"]?.ToString();
             var actionName = context.GetRouteData()?.Values["action"]?.ToString();
             var requestMethod = context.Request.Method;
             var requestPath = context.Request.Path;
             // change to utc + 7
             var time = DateTimeOffset.UtcNow.AddHours(7);
-            var title = "Result: {0}";
             var message =
-                $"{title}: {time} - Exception occurred at {controllerName}/{actionName} - Path: {requestPath}, Method: {requestMethod}";
-            try
-            {
-                await next(context);
-                logger.LogInformation(string.Format(message, "Success"));
-            }
-            catch (Exception ex)
-            {
-                await HandlerExceptionAsync(context, ex, message);
-            }
-        }
-
-        private async Task HandlerExceptionAsync(HttpContext context, Exception exception, string message)
-        {
+                $"{time} - Exception occurred at {controllerName}/{actionName} - Path: {requestPath}, Method: {requestMethod}";
             var statusCode = GetStatusCode(exception);
             string title;
             string messageDetail;
@@ -40,13 +39,13 @@ namespace Application.Middleware
             if (statusCode >= 500)
             {
                 title = "Error";
-                logger.LogError(exception,string.Format(message, title));
+                logger.LogError(exception,message);
                 messageDetail = "Có lỗi ở server";
             }
             else
             {
                 title = "Warning";
-                logger.LogWarning(exception,string.Format(message, title));
+                logger.LogWarning(message);
                 messageDetail = exception.Message;
             }
 
@@ -65,6 +64,7 @@ namespace Application.Middleware
             {
                 NotFoundException => StatusCodes.Status404NotFound,
                 BadRequestException => StatusCodes.Status400BadRequest,
+                ValidationException=> StatusCodes.Status400BadRequest,
                 _ => StatusCodes.Status500InternalServerError
             };
         }

@@ -3,7 +3,6 @@ using Application.Middleware;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
 namespace Application
@@ -17,7 +16,7 @@ namespace Application
             {
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidatorBehavior<,>));
-                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ExceptionBehavior<,>));
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             });
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

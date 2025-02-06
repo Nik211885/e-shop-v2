@@ -6,9 +6,10 @@ namespace Infrastructure.Repository
 {
     public class TestBoundRepository(EfApplicationDbContext dbContext) : ITestBoundRepository
     {
-        public Task<EntityBoundTest> AddAsync(EntityBoundTest entity)
+        public async Task<EntityBoundTest> AddAsync(EntityBoundTest entity)
         {
-            return Task.FromResult(entity);
+            await dbContext.TestCase.AddAsync(entity);
+            return entity;
         }
     }
 }

@@ -1,9 +1,11 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Behavior
 {
-    public class ValidatorBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+    public class ValidatorBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators,
+        ILogger<ValidatorBehavior<TRequest, TResponse>> logger)
         : IPipelineBehavior<TRequest, TResponse>
         where TRequest : notnull
     {

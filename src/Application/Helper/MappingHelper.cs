@@ -10,11 +10,11 @@ namespace Application.Helper
     /// <param name="mapFrom">data source</param>
     /// <typeparam name="TFrom">type data source</typeparam>
     /// <typeparam name="TTo">type data leaks ;)</typeparam>
-    /// <returns></returns>
-    /// <exception cref="Exception">
-    ///     Return exception if create instance for typeof t to
+    /// <returns>Return exception if create instance for typeof t to</returns>
+    /// <exception cref="NullReferenceException">
+    ///     Throw null reference if can't convert to tto
     /// </exception>
-    public static TTo? Mapping<TFrom, TTo>(TFrom mapFrom) where TTo : class
+    public static TTo Mapping<TFrom, TTo>(TFrom mapFrom) where TTo : class
         where TFrom : class
     {
         var typeTo = typeof(TTo);
@@ -30,7 +30,7 @@ namespace Application.Helper
             if(propertyFrom is null) continue;
             p.SetValue(instance, propertyFrom.GetValue(mapFrom));
         }
-        return instance as TTo;
+        return instance as TTo ?? throw new NullReferenceException($"Can not create instance {typeFrom.Name}");
     }
     /// <summary>
     ///     Simple way activator and mapping list data
