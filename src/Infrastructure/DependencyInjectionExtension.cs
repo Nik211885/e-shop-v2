@@ -1,6 +1,9 @@
+using Application.Interface;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repository;
+using Infrastructure.Services.Memory;
+using Infrastructure.Services.Notification;
 using Infrastructure.Services.SlaveDbSelector;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +18,8 @@ namespace Infrastructure
         {
             services.AddSingleton<ISlaveDbSelector, SlaveDbSelector>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IMemoryCacheManager, MemoryCacheManager>();
+            services.AddTransient<ISendNotification, SendNotificationByEmail>();
             services.AddDbContext<EfApplicationDbContext>((servicesProvider,options) =>
             {
                 // have one master but have many slave

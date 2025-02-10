@@ -1,14 +1,17 @@
 using Core.Entities.Test;
+using Core.Interfaces.Repository.Test;
 using MediatR;
 
 namespace Application.Services.Test.Query
 {
-    public record GetListModel : IRequest<List<EntityBoundTest>>;
-    public class GetListTest : IRequestHandler<GetListModel, List<EntityBoundTest>>
+    public record GetListModel : IRequest<IReadOnlyCollection<EntityBoundTest>>;
+    public class GetListTest(ITestBoundRepository testBoundRepository) 
+        : IRequestHandler<GetListModel, IReadOnlyCollection<EntityBoundTest>>
     {
-        public Task<List<EntityBoundTest>> Handle(GetListModel request, CancellationToken cancellationToken)
+        public Task<IReadOnlyCollection<EntityBoundTest>> Handle(GetListModel request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var listTestCase = testBoundRepository.GetAllAsync();
+            return listTestCase;
         }
     }
 }

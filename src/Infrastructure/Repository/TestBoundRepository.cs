@@ -1,6 +1,7 @@
 using Core.Entities.Test;
 using Core.Interfaces.Repository.Test;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
@@ -10,6 +11,12 @@ namespace Infrastructure.Repository
         {
             await dbContext.TestCase.AddAsync(entity);
             return entity;
+        }
+
+        public async Task<IReadOnlyCollection<EntityBoundTest>> GetAllAsync()
+        {
+            var result = await dbContext.TestCase.AsNoTracking().ToListAsync();
+            return result;
         }
     }
 }
