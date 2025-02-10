@@ -21,14 +21,16 @@ namespace Infrastructure.Data
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            var eventBases = from entity in ChangeTracker.Entries<BaseEntity>()
-                where entity.Entity.Events is not null &&
-                      entity.Entity.Events.Any()
-                select entity;
+            var eventBases = ChangeTracker.Entries<BaseEntity>()
+                .Where(x => x.Entity.Events is not null && x.Entity.Events.Any())
+                .Select(x => x.Entity.Events).ToList();
             var result = await base.SaveChangesAsync(cancellationToken);
-            foreach (var e in eventBases)
+            foreach (var events in eventBases)
             {
-                await publisher.Publish(e, cancellationToken);        
+                foreach (var e in events ?? [])
+                {
+                    await publisher.Publish(e,cancellationToken);
+                }       
             }
             return result;
         }

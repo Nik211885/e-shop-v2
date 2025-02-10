@@ -14,7 +14,7 @@ namespace Application.Services.Test.Command.CreateTest
         public async Task<EntityBoundTest> Handle(CreateTestCommand request, CancellationToken cancellationToken)
         {
             var testCase = MappingHelper.Mapping<CreateTestCommand, EntityBoundTest>(request);
-            testCase.RaiseEvent(new CreatedNewTestEvent());
+            testCase.RaiseEvent(new CreatedNewTestEvent(testCase.Id, testCase.Name));
             await unitOfWork.TestBoundRepository.AddAsync(testCase);
             await unitOfWork.SaveChangeAsync();
             return testCase;
