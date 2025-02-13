@@ -18,9 +18,9 @@ namespace Infrastructure.Services.JWT
         private readonly IMemoryCache _memoryCache;
         private readonly byte[] _secret;
 
-        public JwtManagement(IOptions<IdentityAuthentication> identityAuthentication, IMemoryCacheManager memoryCacheManager)
+        public JwtManagement(IdentityAuthentication identityAuthentication, IMemoryCacheManager memoryCacheManager)
         {
-            _identityAuthentication = identityAuthentication.Value;
+            _identityAuthentication = identityAuthentication;
             _memoryCache = memoryCacheManager.GetMemoryCache(MemoryType.Security);
             _secret = Encoding.ASCII.GetBytes(_identityAuthentication.Secret);
         }
